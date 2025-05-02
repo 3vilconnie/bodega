@@ -1,14 +1,6 @@
 from Usuario import Usuario
 
 class Administrador(Usuario):
-    def __init__(self, listaEncargados):
-        super()
-        self.listaEncargados = listaEncargados
+    def __init__(self, nombreUsuario, password, nombre, apellido, email, rut):
+        super().__init__(nombreUsuario, password, nombre, apellido, email, rut)
         
-        @property
-        def listaEncargados(self):
-            return self._listaEncargados
-
-        @listaEncargados
-        def listaEncargados(self, value):
-            self._listaEncargados = value

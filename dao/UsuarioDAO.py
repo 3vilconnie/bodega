@@ -1,23 +1,23 @@
 from models.Conectar import Conectar
 from models.Usuario import Usuario
-
+from PersonaDAO import PersonaDAO
 class UsuarioDAO:
     def __init__(self):
         self.__conectar = Conectar()
 
-    def insertar_usuario(self, nombre_usuario, password, nombre, apellido, email):
-        usuario = Usuario(nombre_usuario, password, nombre, apellido, email)
-        
+    def insertar_usuario(self, nombre_usuario, password, nombre, apellido, email, rut):
+        usuario = Usuario(nombre_usuario, password, nombre, apellido, email, rut)
+        persona = PersonaDAO()
+        if persona.insertar_persona(usuario.rut, usuario.nombre, usuario.apellido, usuario.email):
+            print("persona creada con exito.")
+            
         sql = """
-            INSERT INTO usuario (nombre_usuario, password, nombre, apellido, email) 
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO usuario (nombre_usuario, password) 
+            VALUES (%s, %s)
         """
         valores = (
             usuario.nombreUsuario,
-            usuario.password,
-            usuario.nombre,
-            usuario.apellido,
-            usuario.email
+            usuario.password
         )
         
         if self.__conectar.ejecutar_sql(sql, valores):

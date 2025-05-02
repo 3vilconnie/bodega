@@ -1,28 +1,35 @@
 from models.Conserje import Conserje
 from models.Conectar import Conectar
+from UsuarioDAO import UsuarioDAO
 
 class ConserjeDAO:
     def __init__(self):
         self.__conectar = Conectar()  # Instancia objeto Conectar para ejecutar conexión a base de datos
 
-    def insertar_conserje(self, rut, nombre, apellido, email):
-        conserje = Conserje(rut, nombre, apellido, email)
+    def insertar_conserje(self, nombreUsuario, password, nombre, apellido, email, rut):
+        conserje = Conserje(nombreUsuario, password, nombre, apellido, email, rut)
+        usuario = UsuarioDAO()
+        if(usuario.insertar_usuario(conserje.nombreUsuario, conserje.password, conserje.nombre, conserje.apellido, conserje.email, conserje.rut)):
+            print("usuario creado con exito.")
         
-        sql = """
-            INSERT INTO conserje (rut, nombre, apellido, email) 
-            VALUES (%s, %s, %s, %s)
-        """
-        valores = (conserje.rut, conserje.nombre, conserje.apellido, conserje.email)
+            sql = """
+            INSERT INTO conserje (habilitado, rut, nombreUsuario) 
+            VALUES (%s, %s, %s)
+            """
+            valores = (conserje.habilitado, conserje.rut, conserje.nombreUsuario)
         
-        if self.__conectar.ejecutar_sql(sql, valores):
-            print('Se ha registrado el conserje en la base de datos')
+            if self.__conectar.ejecutar_sql(sql, valores):
+                print('Se ha registrado el conserje en la base de datos')
+            else:
+                print('No se logró registrar el conserje')
         else:
-            print('No se logró registrar el conserje')
+            print(f"error al crear usuario {conserje.nombreUsuario}")
 
     def listar_conserjes(self):
         sql = '''
-            SELECT rut, nombre, apellido, email
-            FROM conserje
+            SELECT p.rut, p.nombre, p.apellido, p.email
+            FROM conserje as c INNER JOIN persona AS p
+            ON c.rut = p.rut 
         '''
         listado = self.__conectar.listar(sql)
         if listado is not None:
@@ -31,7 +38,7 @@ class ConserjeDAO:
 
     def modificar_conserje(self, rut, nombre, apellido, email):
         sql = '''
-            UPDATE conserje
+            UPDATE persona
             SET nombre = %s, apellido = %s, email = %s
             WHERE rut = %s
         '''
@@ -42,10 +49,11 @@ class ConserjeDAO:
 
     def eliminar_conserje(self, rut):
         sql = '''
-            DELETE FROM conserje
+            DELETE FROM persona
             WHERE rut = %s
         '''
-        if self.__conectar.ejecutar_sql(sql, (rut,)):
+        if self.__conectar.listarUno(sql, (rut, ) == 1):
+            self.__conectar.ejecutar_sql(sql, (rut,))
             print('Conserje eliminado')
         else:
             print('No se encontró el conserje')
@@ -53,9 +61,9 @@ class ConserjeDAO:
     def iniciar_sesion(self, nombreUsuario, password):
         sql = '''
             SELECT p.nombre, p.apellido, u.nombreUsuario
-            FROM conserje as c INNER JOIN persona as p ON c.rut = p.rut
-            INNER JOIN usuario as u ON c.idUsuario = u.idUsuario
-            WHERE u.nombreUsuario = %s AND u.password = %s
+            FROM conserje AS c INNER JOIN persona AS p ON c.rut = p.rut
+            INNER JOIN usuario AS u ON c.idUsuario = u.idUsuario
+            WHERE u.nombreUsuario = %s AND u.password = %s AND c.habilitado = True
         '''
         resultado = self.__conectar.listar(sql, (nombreUsuario, password))
         if resultado:

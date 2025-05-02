@@ -1,8 +1,8 @@
 from Persona import Persona
 
 class Usuario(Persona):
-    def __init__(self, idUsuario, nombreUsuario, password, nombre, apellido, email):
-        super().__init__(nombre, apellido, email)
+    def __init__(self, nombreUsuario, password, nombre, apellido, email, rut, idUsuario=None):
+        super().__init__(rut, nombre, apellido, email)
         self.idUsuario = idUsuario
         self.nombreUsuario = nombreUsuario
         self.password = password

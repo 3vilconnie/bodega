@@ -1,58 +1,60 @@
 from models.Administrador import Administrador
 from models.Conectar import Conectar
+from UsuarioDAO import UsuarioDAO
 
 class AdministradorDAO:
     def __init__(self):
         self.__conn = Conectar()
         
-    def insertar_administrador(self, idUsuario, nombreUsuario, password, nombre, apellido, email, listaEncargados):
-        administrador = Administrador(listaEncargados)
-        administrador.idUsuario = idUsuario
-        administrador.nombreUsuario = nombreUsuario
-        administrador.password = password
-        administrador.nombre = nombre
-        administrador.apellido = apellido
-        administrador.email = email
-        
-        sql = '''
+    def insertar_administrador(self, nombreUsuario, password, nombre, apellido, email, rut):
+        administrador = Administrador(nombreUsuario, password, nombre, apellido, email, rut)
+        usuario = UsuarioDAO()
+        if usuario.insertar_usuario(administrador.nombreUsuario, administrador.password, administrador.nombre, administrador.apellido, administrador.email, administrador.rut):
+            print("usuario creado con exito")
+            sql = '''
             INSERT INTO administrador(idUsuario, nombreUsuario, password, nombre, apellido, email, listaEncargados)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
-        '''
-        valores = (administrador.idUsuario, administrador.nombreUsuario, administrador.password, 
+            '''
+            valores = (administrador.idUsuario, administrador.nombreUsuario, administrador.password, 
                    administrador.nombre, administrador.apellido, administrador.email, 
                    administrador.listaEncargados)
         
-        return self.__conn.ejecutar_sql(sql, valores)
+            return self.__conn.ejecutar_sql(sql, valores)
+        else:
+            print("error al crear usuario.")
 
     def listar_administradores(self):
         sql = '''
-            SELECT idUsuario, nombreUsuario, nombre, apellido, email, listaEncargados
-            FROM administrador
+            SELECT a.nombreUsuario, p.nombre, p.apellido, p.email
+            FROM administrador AS a INNER JOIN persona AS p ON a.rut = p.rut
         '''
         return self.__conn.listar(sql)
 
-    def modificar_administrador(self, idUsuario, nombreUsuario, password, nombre, apellido, email, listaEncargados):
+    def modificar_administrador(self, idUsuario, nombreUsuario, password, nombre, apellido, email, rut):
         sql = '''
-            UPDATE administrador
-            SET nombreUsuario = %s, password = %s, nombre = %s, apellido = %s, email = %s, listaEncargados = %s
-            WHERE idUsuario = %s
+            UPDATE administrador as a
+            INNER JOIN persona AS p ON a.rut = p.rut
+            INNER JOIN usuario AS u ON a.nombreUsuario = u.nombreUsuario 
+            SET u.nombreUsuario = %s, u.password = %s, p.nombre = %s, p.apellido = %s, p.email = %s
+            WHERE a.rut = %s
         '''
-        valores = (nombreUsuario, password, nombre, apellido, email, listaEncargados, idUsuario)
+        
+        valores = (nombreUsuario, password, nombre, apellido, email, rut)
         return self.__conn.ejecutar_sql(sql, valores)
 
-    def eliminar_administrador(self, idUsuario):
+    def eliminar_administrador(self, rut):
         sql = '''
             DELETE FROM administrador
-            WHERE idUsuario = %s
+            WHERE rut = %s
         '''
-        return self.__conn.ejecutar_sql(sql, (idUsuario,))
+        return self.__conn.ejecutar_sql(sql, (rut,))
     
     def iniciar_sesion(self, nombreUsuario, password):
         sql = '''
             SELECT nombreUsuario, nombre, apellido
-            FROM administrador as a INNER JOIN persona as p ON p.rut = a.rut
-            INNER JOIN usuario as u ON a.idUsuario = u.idUsuario
-            WHERE nombreUsuario = %s AND password = %s
+            FROM administrador AS a INNER JOIN persona AS p ON p.rut = a.rut
+            INNER JOIN usuario AS u ON a.idUsuario = u.idUsuario
+            WHERE u.nombreUsuario = %s AND u.password = %s
         '''
         valores = (nombreUsuario, password)
         resultado = self.__conn.obtener_uno(sql, valores)

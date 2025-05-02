@@ -1,21 +1,23 @@
 from models.Encargado import Encargado
 from models.Conectar import Conectar
-from PersonaDAO import PersonaDAO
+from UsuarioDAO import UsuarioDAO
 
 class EncargadoDAO:
     def __init__(self):
         self.__conn = Conectar()
         
-    def insertar_encargado(self, idUsuario, nombreUsuario, password, nombre, apellido, email, idEncargado, disponible=True):
-        encargado = Encargado(idUsuario, nombreUsuario, password, nombre, apellido, email, idEncargado, disponible)
-        person = PersonaDAO()
+    def insertar_encargado(self, nombreUsuario, password, nombre, apellido, email, rut, disponible=True):
+        encargado = Encargado(nombreUsuario, password, nombre, apellido, email, rut, disponible)
+        usuario = UsuarioDAO()
         
-        if person.insertar_persona(encargado.rut, encargado.nombre, encargado.apellido, encargado.email):
+        if usuario.insertar_usuario(encargado.nombreUsuario, encargado.password, encargado.nombre, encargado.apellido, encargado.email, encargado.rut):
+            print("usuario creado con exito.")
+            
             sql = '''
-                INSERT INTO encargado(disponible, rut)
-                VALUES (%s, %s)
+                INSERT INTO encargado(disponible, rut, nombreUsuario)
+                VALUES (%s, %s, %s)
             '''
-            valores = (encargado.disponible, encargado.rut)
+            valores = (encargado.disponible, encargado.rut, encargado.nombreUsuario)
             
             return self.__conn.ejecutar_sql(sql, valores)
         else:
@@ -23,34 +25,36 @@ class EncargadoDAO:
 
     def listar_encargados(self):
         sql = '''
-            SELECT nombreUsuario, nombre, apellido, email
+            SELECT u.nombreUsuario, p.nombre, p.apellido, p.email
             FROM encargado AS e INNER JOIN persona AS p ON p.rut = e.rut
-            INNER JOIN usuario as u ON u.idUsuario = e.idUsuario 
+            INNER JOIN usuario as u ON u.nombreUsuario = e.nombreUsuario 
         '''
         return self.__conn.listar(sql)
 
-    def modificar_encargado(self, idUsuario, nombreUsuario, password, nombre, apellido, email):
+    def modificar_encargado(self, rut, password, nombre, apellido, email):
         sql = '''
-            UPDATE encargado
-            SET nombreUsuario = %s, password = %s, nombre = %s, apellido = %s, email = %s
-            WHERE idUsuario = %s
+            UPDATE conserje AS c
+            INNER JOIN persona AS p ON c.rut = p.rut
+            INNER JOIN usuario AS u ON c.nombreUsuario = u.nombreUsuario
+            SET usuario.password = %s, persona.nombre = %s, persona.apellido = %s, email = %s
+            WHERE p.rut = %s
         '''
-        valores = (nombreUsuario, password, nombre, apellido, email, areaResponsabilidad, idUsuario)
+        valores = (password, nombre, apellido, email, rut)
         return self.__conn.ejecutar_sql(sql, valores)
 
-    def eliminar_encargado(self, idUsuario):
+    def eliminar_encargado(self, rut):
         sql = '''
-            DELETE FROM encargado
-            WHERE idUsuario = %s
+            DELETE FROM persona
+            WHERE rut = %s
         '''
-        return self.__conn.ejecutar_sql(sql, (idUsuario,))
+        return self.__conn.ejecutar_sql(sql, (rut,))
     
     def iniciar_sesion(self, nombreUsuario, password):
         sql = '''
             SELECT nombreUsuario, nombre, apellido
-            FROM encargado as e INNER JOIN persona as p ON p.rut = e.rut
-            INNER JOIN usuario as u ON e.idUsuario = u.idUsuario
-            WHERE nombreUsuario = %s AND password = %s
+            FROM encargado AS e INNER JOIN persona AS p ON p.rut = e.rut
+            INNER JOIN usuario AS u ON e.idUsuario = u.idUsuario
+            WHERE u.nombreUsuario = %s AND u.password = %s AND u.habilitado = True
         '''
         valores = (nombreUsuario, password)
         resultado = self.__conn.obtener_uno(sql, valores)
