@@ -5,13 +5,13 @@ class SolicitudDAO:
     def __init__(self):
         self.__conectar = Conectar()
 
-    def insertar_solicitud(self, fecha, conserje):
-        solicitud = Solicitud(fecha, conserje)
+    def insertar_solicitud(self, fecha, rutConserje):
+        solicitud = Solicitud(fecha, rutConserje)
         sql = """
-            INSERT INTO solicitud (fecha, conserje) 
+            INSERT INTO solicitud (fecha, rutConserje) 
             VALUES (%s, %s)
         """
-        valores = (solicitud.fecha, solicitud.Conserje)
+        valores = (solicitud.fecha, solicitud.rutConserje)
         if self.__conectar.ejecutar_sql(sql, valores):
             print('Solicitud registrada exitosamente')
         else:
@@ -19,20 +19,20 @@ class SolicitudDAO:
 
     def listar_solicitudes(self):
         sql = '''
-            SELECT fecha, conserje
+            SELECT fecha, rutConserje
             FROM solicitud
         '''
         listado = self.__conectar.listar(sql)
         if listado is not None:
             for solicitud in listado:
-                print(f'Fecha: {solicitud[0]}, Conserje: {solicitud[1]}')
+                print(f'Fecha: {solicitud[0]}, rut Conserje: {solicitud[1]}')
 
-    def eliminar_solicitud(self, fecha):
+    def eliminar_solicitud(self, idSolicitud):
         sql = '''
             DELETE FROM solicitud
-            WHERE fecha = %s
+            WHERE idSolicitud = %s
         '''
-        if self.__conectar.ejecutar_sql(sql, (fecha,)):
+        if self.__conectar.ejecutar_sql(sql, (idSolicitud,)):
             print('Solicitud eliminada exitosamente')
         else:
             print('No se encontró la solicitud')

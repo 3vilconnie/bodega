@@ -72,4 +72,3 @@ class ConserjeDAO:
         else:
             print('Credenciales incorrectas')
             return False
-    
