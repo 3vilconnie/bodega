@@ -72,3 +72,16 @@ class ConserjeDAO:
         else:
             print('Credenciales incorrectas')
             return False
+        
+    def listar_solicitudes(self):
+        sql = '''
+            SELECT s.idSolicitud, s.fechaSolicitud, s.estado
+            FROM solicitud AS s INNER JOIN conserje AS c ON s.rut = c.rut
+        '''
+        listado = self.__conectar.listar(sql)
+
+        if listado is not None:
+            for solicitud in listado:
+                print(f'ID: {solicitud[0]}, Fecha: {solicitud[1]}, Estado: {solicitud[2]}')
+        else:
+            print('No hay solicitudes registradas')

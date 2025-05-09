@@ -3,6 +3,7 @@ from dao.ConserjeDAO import ConserjeDAO
 import os
 def generarTitulo(titulo):
     print(f'==== {titulo.upper()} ====')
+
 def generarMenu(l):
     generarTitulo("Menu de acciones")
     for i, e in enumerate(l):
@@ -38,6 +39,7 @@ def isPositiveNumber(msg):
         print("error: ", e)
         isPositiveNumber(msg)
     return data
+
 def isBoolean(msg):
     try:
         data = input(msg).upper()
@@ -81,7 +83,7 @@ def eliminarProducto():
     
 menuAdministrador = ["generar orden de compra", "modificar orden de compra", "eliminar reporte", "mostrar encargados", "habilitar encargado", "deshabilitar encargado", "agregar encargado", "eliminar encargado"]
 menuEncargado = ["generar reporte", "modificar reporte", "mostrar solicitudes", "mostrar personal", "agregar personal", "eliminar personal"]
-menuConserje = ["generar solicitud", "modificar solicitud", "salir"]
+menuConserje = ["generar solicitud", "modificar solicitud", "listar solicitudes", "salir"]
 menuIniciarSesion = ["iniciar sesion como conserje", "iniciar sesion como encargado", "iniciar sesion como administrador", "olvide mi contraseña"]
 opcion = generarMenu(menuIniciarSesion)
 
@@ -100,6 +102,9 @@ while(opcion != 0):
                     pass
                 case 2: #modificar solicitud
                     pass
+                case 3: #mostrar solicitudes
+                    generarTitulo('mostrar solicitudes')
+                    dao.listar_solicitudes()
                 case 3: #salir
                     pass
         case 2: #as encargado
@@ -150,6 +155,6 @@ while(opcion != 0):
                     pass
         case 4: #olvidar contraseña
             print("mala cuea")
-            input("Presione enter para continuar...")
+            input("Por favor presione enter para continuar...")
             
     opcion = generarMenu(menuIniciarSesion)
