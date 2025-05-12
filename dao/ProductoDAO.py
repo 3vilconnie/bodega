@@ -5,18 +5,17 @@ class ProductoDAO:
     def __init__(self):
         self.__conectar = Conectar() # Instancia objeto Conectar para ejecutar conexion a base de datos
         
-    def insertar_producto(self, idProducto, nombreProducto, stock, stockCritico, disponible):
+    def insertar_producto(self, nombreProducto, stock, stockCritico, disponible):
         # Instanciar Producto
-        producto = Producto(idProducto, nombreProducto, stock, stockCritico, disponible)
+        producto = Producto(nombreProducto, stock, stockCritico, disponible)
         
         # Utilizando SQL para insertar nuevos datos
         sql = """
-            INSERT INTO producto (idProducto, nombreProducto, stock, stockCritico, disponible) 
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO producto (nombreProducto, stock, stockCritico, disponible) 
+            VALUES (%s, %s, %s, %s)
             """
         # Crear tupla de datos con objeto producto 
         valores = (
-            producto.idProducto, 
             producto.nombreProducto, 
             producto.stock, 
             producto.stockCritico, 
@@ -47,8 +46,8 @@ class ProductoDAO:
                 
     def eliminar_producto(self, idProducto):
         sql = """
-            SELECT nombre FROM producto
-            WHERE idProducto = %s
+            SELECT nombreproducto FROM producto
+            WHERE idproducto = %s
         """
         if(self.__conectar.listarUno(sql, (idProducto, )) != None):
             sql = '''
@@ -143,3 +142,13 @@ class ProductoDAO:
             self.__conectar(sql, valores)
         else:
             print("no se pude deshabilitar producto!!!")
+    def mostraCodigos(self):
+        sql = '''
+            SELECT idProducto, nombreProducto
+            FROM producto
+            '''
+        listado = self.__conectar.listar(sql) 
+        if listado is not None:     
+            for i, producto in enumerate(listado): 
+                print(f'{i+1}) Codigo producto: {producto[0]} Nombre: {producto[1]}')
+                print('------------------------------------')

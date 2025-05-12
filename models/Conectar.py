@@ -1,4 +1,4 @@
-import mysql.connector # Importando mysql.connector
+import psycopg2 # Importando mysql.connector
 
 # Investigar try except con mysql.connector.error
 # Aplicar try - except a clase conectar
@@ -8,11 +8,11 @@ class Conectar:
     def __init__(self):
         # Manejo de errores sera para mas adelante
         # Metodo connect de mysql.connector
-        self.__conn = mysql.connector.connect(
+        self.__conn = psycopg2.connect(
             host = '127.0.0.1',
-            username = 'postgres',
-            password = 'dani12345',
-            database = 'bodega'
+            database = 'bodega',
+            user = 'postgres',
+            password = 'dani12345'
         )
         self.__cursor = self.__conn.cursor() # Crea el cursor de la bd
         

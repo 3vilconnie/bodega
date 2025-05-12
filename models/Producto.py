@@ -1,7 +1,7 @@
 # Aplicar validacion de codigo
 class Producto:
     # constructor
-    def __init__(self, idProducto, nombreProducto, stock, stockCritico, disponible):
+    def __init__(self, nombreProducto, stock, stockCritico, disponible, idProducto=None):
         # Atributos
         self.__idProducto = idProducto
         self.__nombreProducto = nombreProducto

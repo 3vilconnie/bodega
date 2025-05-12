@@ -1,8 +1,11 @@
 from dao.ProductoDAO import ProductoDAO
-from dao.ConserjeDAO import ConserjeDAO
+#from dao.ConserjeDAO import ConserjeDAO
 import os
 def generarTitulo(titulo):
     print(f'==== {titulo.upper()} ====')
+    
+def pausar():
+    input("presione una tecla para continuar...")
 
 def generarMenu(l):
     generarTitulo("Menu de acciones")
@@ -42,42 +45,55 @@ def isPositiveNumber(msg):
 
 def isBoolean(msg):
     try:
-        data = input(msg).upper()
-        if data != "S" or data != "N":
+        data = input(msg)
+        if data != "s" and data != "n":
             raise ValueError("la respuesta debe ser S o N.")
     except ValueError as e:
         print("error: ", e)
         isBoolean(msg)
-    return data
+    return True if data == "s" else False
 
 def agregarProducto():
     generarTitulo('Ingresando producto')
-    idProducto = notVoid('Ingrese codigo producto:\n')
+    #idProducto = notVoid('Ingrese codigo producto:\n')
     nombre = notVoid('Ingrese nombre de producto:\n')
     stock = isPositiveNumber('Ingrese stock de producto:\n')
     stockCritico = isPositiveNumber('Ingrese stock critico de producto:\n')
     habilitado = isBoolean("desea habilitar este producto en el inventario? (S/N)")
 
     dao = ProductoDAO()
-    dao.insertar_producto(idProducto, nombre, stock, stockCritico, habilitado)
+    dao.insertar_producto(nombre, stock, stockCritico, habilitado)
 
 def mostrarProductos():
-    generarTitulo('Mostrar producto')
+    generarTitulo('listado de productos')
     dao = ProductoDAO()
     dao.listar_productos()
 
 def actualizarProducto():
     generarTitulo('Actualizar producto')
-    # buscar un producto
+    mostrarProductos()
     codigo = notVoid('Ingrese codigo a modificar:\n')
-    # nuevo nombre producto
-    nombre = notVoid('Ingrese nuevo nombre:\n').capitalize()
+    subMenu = ["nombre de producto", "stock critico"]
+    opcion = generarMenu(subMenu)
     dao = ProductoDAO()
-    dao.modificar_nombre_producto(codigo, nombre)    
+    match(opcion):
+        case 1:
+            generarTitulo("modificar nombre")
+            nombre = notVoid('Ingrese nuevo nombre:\n').capitalize()
+            dao.modificarNombre(codigo, nombre)
+        case 2:
+            generarTitulo("modificar stock critico")
+            stockCritico = isPositiveNumber('Ingrese nuevo stock critico:\n')
+            dao.modificarStockCritico(codigo, stockCritico)
+            
+        case 0:
+            pass
+    pausar()
 
 def eliminarProducto():
+    mostrarProductos()
     generarTitulo('Eliminar productos')
-    codigo = notVoid('Ingrese codigo a eliminar:\n')
+    codigo = isPositiveNumber('Ingrese codigo a eliminar:\n')
     dao = ProductoDAO()
     dao.eliminar_producto(codigo)
     
@@ -92,28 +108,30 @@ menuAdministrador = ["agregar producto",
                      "habilitar encargado", 
                      "deshabilitar encargado", 
                      "agregar encargado", 
-                     "eliminar encargado", 
-                     "salir"
+                     "eliminar encargado"
                      ]
 menuEncargado = ["generar reporte", 
                  "modificar reporte", 
                  "mostrar solicitudes", 
                  "mostrar personal", 
                  "agregar personal", 
-                 "eliminar personal", 
-                 "salir"
+                 "eliminar personal"
                  ]
 menuConserje = ["generar solicitud", 
-                "modificar solicitud", 
-                "salir"
+                "modificar solicitud"
                 ]
 menuIniciarSesion = ["iniciar sesion como conserje", 
                      "iniciar sesion como encargado", 
                      "iniciar sesion como administrador", 
-                     "olvide mi contraseña", 
-                     "salir"
+                     "olvide mi contraseña"
                      ]
-opcion = generaMenu(menuAdministrador)
+opcion = generarMenu(menuAdministrador)
+while not(opcion == 0):
+    match(opcion):
+        case 1:
+            actualizarProducto()
+    opcion = generarMenu(menuAdministrador)        
+        
 """
 while(opcion != 3):
     match(opcion):
@@ -186,3 +204,4 @@ while(opcion != 3):
             input("Por favor presione enter para continuar...")
             
     opcion = generarMenu(menuIniciarSesion)
+"""
