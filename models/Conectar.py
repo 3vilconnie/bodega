@@ -9,10 +9,10 @@ class Conectar:
         # Manejo de errores sera para mas adelante
         # Metodo connect de mysql.connector
         self.__conn = mysql.connector.connect(
-            host = 'localhost',
-            username = 'root',
-            password = '',
-            database = 'tienda'
+            host = '127.0.0.1',
+            username = 'postgres',
+            password = 'dani12345',
+            database = 'bodega'
         )
         self.__cursor = self.__conn.cursor() # Crea el cursor de la bd
         

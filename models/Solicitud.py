@@ -1,7 +1,7 @@
 class Solicitud:
-    def __init__(self, fecha, Conserje):
+    def __init__(self, fecha, rutConserje):
         self.fecha = fecha
-        self.Conserje = Conserje
+        self.rutConserje = rutConserje
         
     @property
     def fecha(self):

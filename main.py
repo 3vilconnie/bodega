@@ -40,12 +40,40 @@ def eliminarProducto():
     dao = ProductoDAO()
     dao.eliminar_producto(codigo)
     
-menuAdministrador = ["generar orden de compra", "modificar orden de compra", "eliminar reporte", "mostrar encargados", "habilitar encargado", "deshabilitar encargado", "agregar encargado", "eliminar encargado", "salir"]
-menuEncargado = ["generar reporte", "modificar reporte", "mostrar solicitudes", "mostrar personal", "agregar personal", "eliminar personal", "salir"]
-menuConserje = ["generar solicitud", "modificar solicitud", "salir"]
-menuIniciarSesion = ["iniciar sesion como conserje", "iniciar sesion como encargado", "iniciar sesion como administrador", "olvide mi contraseña", "salir"]
-opcion = generaMenu(menuIniciarSesion)
-
+menuAdministrador = ["agregar producto",
+                     "mostrar listado productos",
+                     "modificar producto",
+                     "eliminar producto", 
+                     "generar orden de compra", 
+                     "modificar orden de compra", 
+                     "eliminar reporte", 
+                     "mostrar encargados", 
+                     "habilitar encargado", 
+                     "deshabilitar encargado", 
+                     "agregar encargado", 
+                     "eliminar encargado", 
+                     "salir"
+                     ]
+menuEncargado = ["generar reporte", 
+                 "modificar reporte", 
+                 "mostrar solicitudes", 
+                 "mostrar personal", 
+                 "agregar personal", 
+                 "eliminar personal", 
+                 "salir"
+                 ]
+menuConserje = ["generar solicitud", 
+                "modificar solicitud", 
+                "salir"
+                ]
+menuIniciarSesion = ["iniciar sesion como conserje", 
+                     "iniciar sesion como encargado", 
+                     "iniciar sesion como administrador", 
+                     "olvide mi contraseña", 
+                     "salir"
+                     ]
+opcion = generaMenu(menuAdministrador)
+"""
 while(opcion != 3):
     match(opcion):
         case 1: #login
@@ -58,8 +86,8 @@ while(opcion != 3):
             pass
             
     opcion = generaMenu(menuIniciarSesion)
-
 """
+
 while(opcion != 0):
     os.system('cls') # Limpia consola
     match(opcion):
@@ -79,5 +107,4 @@ while(opcion != 0):
             print('Saliendo sistema...')                
             input('Presione enter para continuar...')
             break
-    opcion = generaMenu(menu)
-"""
+    opcion = generaMenu(menuAdministrador)

@@ -5,13 +5,14 @@ class SolicitudDAO:
     def __init__(self):
         self.__conectar = Conectar()
 
-    def insertar_solicitud(self, fecha, conserje):
-        solicitud = Solicitud(fecha, conserje)
+    def insertar_solicitud(self, fecha, rutConserje):
+        solicitud = Solicitud(fecha, rutConserje)
         sql = """
-            INSERT INTO solicitud (fecha, conserje) 
-            VALUES (%s, %s)
+            INSERT INTO solicitud (fecha, rutConserje) 
+            VALUES (%s, %s) 
         """
-        valores = (solicitud.fecha, solicitud.Conserje)
+        valores = (solicitud.fecha, solicitud.rutConserje)
+        
         if self.__conectar.ejecutar_sql(sql, valores):
             print('Solicitud registrada exitosamente')
         else:
@@ -19,7 +20,7 @@ class SolicitudDAO:
 
     def listar_solicitudes(self):
         sql = '''
-            SELECT fecha, conserje
+            SELECT fecha, rutConserje
             FROM solicitud
         '''
         listado = self.__conectar.listar(sql)
@@ -36,3 +37,6 @@ class SolicitudDAO:
             print('Solicitud eliminada exitosamente')
         else:
             print('No se encontró la solicitud')
+    
+    def agregarProducto(self):
+        pass
