@@ -1,6 +1,9 @@
-from dao.ProductoDAO import ProductoDAO
-#from dao.ConserjeDAO import ConserjeDAO
+
 import os
+
+from dao.ConserjeDAO import ConserjeDAO
+from dao.AdministradorDAO import AdministradorDAO
+from dao.ProductoDAO import ProductoDAO
 def generarTitulo(titulo):
     print(f'==== {titulo.upper()} ====')
     
@@ -124,16 +127,10 @@ menuIniciarSesion = ["iniciar sesion como conserje",
                      "iniciar sesion como encargado", 
                      "iniciar sesion como administrador", 
                      "olvide mi contraseña"
-                     ]
-opcion = generarMenu(menuAdministrador)
-while not(opcion == 0):
-    match(opcion):
-        case 1:
-            actualizarProducto()
-    opcion = generarMenu(menuAdministrador)        
-        
-"""
-while(opcion != 3):
+                     ]  
+
+opcion = generarMenu(menuIniciarSesion)
+while(opcion != 0):
     match(opcion):
         case 1: #as conserje
             generarTitulo('Iniciar sesion como conserje')
@@ -178,30 +175,32 @@ while(opcion != 3):
             generarTitulo('Iniciar sesion como administrador')
             nombreUsuario = notVoid('Ingrese su nombre de usuario:\n')
             password = notVoid('Ingrese su contraseña:\n')
-            dao = ConserjeDAO()
-            dao.iniciar_sesion(nombreUsuario, password)
-            generarTitulo('Menu de administrador')
-            opcionAdministrador = generarMenu(menuAdministrador)
-            match(opcionAdministrador):
-                case 1: #generar orden de compra
-                    pass
-                case 2: #modificar orden de compra
-                    pass
-                case 3: #eliminar reporte
-                    pass
-                case 4: #mostrar encargados
-                    pass
-                case 5: #habilitar encargado
-                    pass
-                case 6: #deshabilitar encargado
-                    pass
-                case 7: #agregar encargado
-                    pass
-                case 8: #eliminar encargado
-                    pass
+            dao = AdministradorDAO()
+            if dao.iniciar_sesion(nombreUsuario, password):
+                generarTitulo('Menu de administrador')
+                opcionAdministrador = generarMenu(menuAdministrador)
+                match(opcionAdministrador):
+                    case 1: #generar orden de compra
+                        pass
+                    case 2: #modificar orden de compra
+                        pass
+                    case 3: #eliminar reporte
+                        pass
+                    case 4: #mostrar encargados
+                        pass
+                    case 5: #habilitar encargado
+                        pass
+                    case 6: #deshabilitar encargado
+                        pass
+                    case 7: #agregar encargado
+                        pass
+                    case 8: #eliminar encargado
+                        pass
+            else:
+                print("usuario o contraseña incorrectos")
+                pausar()
         case 4: #olvidar contraseña
             print("mala cuea")
             input("Por favor presione enter para continuar...")
             
     opcion = generarMenu(menuIniciarSesion)
-"""

@@ -1,6 +1,6 @@
 from models.Encargado import Encargado
 from models.Conectar import Conectar
-from UsuarioDAO import UsuarioDAO
+from .UsuarioDAO import UsuarioDAO
 
 class EncargadoDAO:
     def __init__(self):
@@ -10,14 +10,16 @@ class EncargadoDAO:
         encargado = Encargado(nombreUsuario, password, nombre, apellido, email, rut, disponible)
         usuario = UsuarioDAO()
         
-        if usuario.insertar_usuario(encargado.nombreUsuario, encargado.password, encargado.nombre, encargado.apellido, encargado.email, encargado.rut):
+        if usuario.insertar_usuario(encargado.nombreUsuario, encargado.password, encargado.nombre, encargado.apellido, encargado.email, encargado._rut):
             print("usuario creado con exito.")
             
             sql = '''
-                INSERT INTO encargado(disponible, rut, nombreUsuario)
-                VALUES (%s, %s, %s)
+                INSERT INTO encargado(rut, idusuario)
+                VALUES (%s, %s)
             '''
-            valores = (encargado.disponible, encargado.rut, encargado.nombreUsuario)
+            idusuario = usuario.obtener_id_usuario(encargado._rut)
+            
+            valores = (encargado._rut, idusuario)
             
             return self.__conn.ejecutar_sql(sql, valores)
         else:

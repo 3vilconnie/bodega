@@ -12,7 +12,7 @@ class Conectar:
             host = '127.0.0.1',
             database = 'bodega',
             user = 'postgres',
-            password = 'dani12345'
+            password = 'dani123'
         )
         self.__cursor = self.__conn.cursor() # Crea el cursor de la bd
         

@@ -1,6 +1,6 @@
 from models.Conserje import Conserje
 from models.Conectar import Conectar
-from UsuarioDAO import UsuarioDAO
+from .UsuarioDAO import UsuarioDAO
 
 class ConserjeDAO:
     def __init__(self):
@@ -9,14 +9,15 @@ class ConserjeDAO:
     def insertar_conserje(self, nombreUsuario, password, nombre, apellido, email, rut):
         conserje = Conserje(nombreUsuario, password, nombre, apellido, email, rut)
         usuario = UsuarioDAO()
-        if(usuario.insertar_usuario(conserje.nombreUsuario, conserje.password, conserje.nombre, conserje.apellido, conserje.email, conserje.rut)):
+        if(usuario.insertar_usuario(conserje.nombreUsuario, conserje.password, conserje.nombre, conserje.apellido, conserje.email, conserje._rut)):
             print("usuario creado con exito.")
         
             sql = """
-            INSERT INTO conserje (habilitado, rut, nombreUsuario) 
+            INSERT INTO conserje (idusuario, rut, habilitado) 
             VALUES (%s, %s, %s)
             """
-            valores = (conserje.habilitado, conserje.rut, conserje.nombreUsuario)
+            idusuario = usuario.obtener_id_usuario(conserje._rut)
+            valores = (idusuario, conserje._rut, conserje.habilitado)
         
             if self.__conectar.ejecutar_sql(sql, valores):
                 print('Se ha registrado el conserje en la base de datos')

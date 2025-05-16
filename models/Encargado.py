@@ -1,4 +1,4 @@
-from Usuario import Usuario
+from .Usuario import Usuario
 
 class Encargado(Usuario):
     def __init__(self, nombreUsuario, password, nombre, apellido, email, rut, disponible):

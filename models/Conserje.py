@@ -1,4 +1,4 @@
-from Usuario import Usuario
+from .Usuario import Usuario
 
 class Conserje(Usuario):
     def __init__(self, nombreUsuario, password, nombre, apellido, email, rut, idUsuario=None):
@@ -9,6 +9,6 @@ class Conserje(Usuario):
     def habilitado(self):
         return self._habilitado
 
-    @habilitado
+    @habilitado.setter
     def habilitado(self, value):
         self._habilitado = value

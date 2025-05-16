@@ -1,6 +1,7 @@
 from models.Conectar import Conectar
 from models.Usuario import Usuario
-from PersonaDAO import PersonaDAO
+from .PersonaDAO import PersonaDAO
+
 class UsuarioDAO:
     def __init__(self):
         self.__conectar = Conectar()
@@ -8,22 +9,21 @@ class UsuarioDAO:
     def insertar_usuario(self, nombre_usuario, password, nombre, apellido, email, rut):
         usuario = Usuario(nombre_usuario, password, nombre, apellido, email, rut)
         persona = PersonaDAO()
-        if persona.insertar_persona(usuario.rut, usuario.nombre, usuario.apellido, usuario.email):
+        if persona.insertar_persona(usuario._rut, usuario.nombre, usuario.apellido, usuario.email):
             print("persona creada con exito.")
             
         sql = """
-            INSERT INTO usuario (nombre_usuario, password) 
-            VALUES (%s, %s)
+            INSERT INTO usuario (rut, nombreusuario, password) 
+            VALUES (%s, %s, %s)
         """
         valores = (
+            usuario._rut,
             usuario.nombreUsuario,
             usuario.password
         )
         
-        if self.__conectar.ejecutar_sql(sql, valores):
-            print('Se ha registrado el usuario en la base de datos')
-        else:
-            print('No se logró registrar el usuario')
+        return self.__conectar.ejecutar_sql(sql, valores)
+            
 
     def listar_usuarios(self):
         sql = '''
@@ -69,3 +69,12 @@ class UsuarioDAO:
             print('Se eliminó el usuario')
         else:
             print('No se encontró el usuario')
+
+    def obtener_id_usuario(self, rut):
+        sql = '''
+            SELECT idUsuario
+            FROM usuario
+            WHERE rut = %s
+        '''
+        
+        return self.__conectar.listarUno(sql, (rut,))[0]

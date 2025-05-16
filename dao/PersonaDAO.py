@@ -13,7 +13,7 @@ class PersonaDAO:
             VALUES (%s, %s, %s, %s)
         '''
         
-        valores = (persona.rut, persona.nombre, persona.apellido, persona.email)
+        valores = (persona._rut, persona.nombre, persona.apellido, persona.email)
         
         return self.__conn.ejecutar_sql(sql, valores)
 

@@ -1,6 +1,6 @@
 from models.Administrador import Administrador
 from models.Conectar import Conectar
-from UsuarioDAO import UsuarioDAO
+from .UsuarioDAO import UsuarioDAO
 
 class AdministradorDAO:
     def __init__(self):
@@ -9,15 +9,15 @@ class AdministradorDAO:
     def insertar_administrador(self, nombreUsuario, password, nombre, apellido, email, rut):
         administrador = Administrador(nombreUsuario, password, nombre, apellido, email, rut)
         usuario = UsuarioDAO()
-        if usuario.insertar_usuario(administrador.nombreUsuario, administrador.password, administrador.nombre, administrador.apellido, administrador.email, administrador.rut):
+        if usuario.insertar_usuario(administrador.nombreUsuario, administrador.password, administrador.nombre, administrador.apellido, administrador.email, administrador._rut):
             print("usuario creado con exito")
             sql = '''
-            INSERT INTO administrador(idUsuario, nombreUsuario, password, nombre, apellido, email, listaEncargados)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO administrador(idusuario, rut)
+            VALUES (%s, %s)
             '''
-            valores = (administrador.idUsuario, administrador.nombreUsuario, administrador.password, 
-                   administrador.nombre, administrador.apellido, administrador.email, 
-                   administrador.listaEncargados)
+            idusuario = usuario.obtener_id_usuario(administrador._rut)
+            valores = (idusuario,  
+                   administrador._rut)
         
             return self.__conn.ejecutar_sql(sql, valores)
         else:
@@ -57,6 +57,8 @@ class AdministradorDAO:
             WHERE u.nombreUsuario = %s AND u.password = %s
         '''
         valores = (nombreUsuario, password)
-        resultado = self.__conn.obtener_uno(sql, valores)
+        if self.__conn.listarUno(sql, valores) != None:
+            print(f"sesion iniciada: Bienvenido {nombreUsuario}")  
+            return True
         
-        return resultado
+        return False

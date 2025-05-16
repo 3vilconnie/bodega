@@ -1,4 +1,4 @@
-from Persona import Persona
+from .Persona import Persona
 
 class Usuario(Persona):
     def __init__(self, nombreUsuario, password, nombre, apellido, email, rut, idUsuario=None):
