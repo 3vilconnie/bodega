@@ -7,18 +7,18 @@ class SolicitudDAO:
 
     def insertar_solicitud(self, fecha, rutConserje):
         solicitud = Solicitud(fecha, rutConserje)
-    def insertar_solicitud(self, fecha, rutConserje):
-        solicitud = Solicitud(fecha, rutConserje)
         sql = """
-            INSERT INTO solicitud (fecha, rutConserje) 
-            VALUES (%s, %s) 
+            INSERT INTO solicitud (fecha, rutconserje) 
+            VALUES (%s, %s)
         """
-        valores = (solicitud.fecha, solicitud.rutrutConserje)
+        valores = (solicitud.fecha, solicitud.rutConserje)
         
         if self.__conectar.ejecutar_sql(sql, valores):
             print('Solicitud registrada exitosamente')
+            return True
         else:
             print('No se pudo registrar la solicitud')
+            return False
 
     def listar_solicitudes(self):
         sql = '''

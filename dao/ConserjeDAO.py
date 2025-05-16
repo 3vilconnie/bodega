@@ -61,18 +61,20 @@ class ConserjeDAO:
             
     def iniciar_sesion(self, nombreUsuario, password):
         sql = '''
-            SELECT p.nombre, p.apellido, u.nombreUsuario
+            SELECT p.nombre, p.apellido, u.nombreUsuario, p.rut
             FROM conserje AS c INNER JOIN persona AS p ON c.rut = p.rut
             INNER JOIN usuario AS u ON c.idUsuario = u.idUsuario
             WHERE u.nombreUsuario = %s AND u.password = %s AND c.habilitado = True
         '''
-        resultado = self.__conectar.listar(sql, (nombreUsuario, password))
-        if resultado:
-            print('Inicio de sesión exitoso')
-            return True
-        else:
-            print('Credenciales incorrectas')
-            return False
+        
+        if self.__conectar.listarUno(sql, (nombreUsuario, password)) != None:
+            print(f'Inicio de sesión exitoso: Bienvenido {nombreUsuario}')
+            nombre, apellido, nombreUsuario, rut = self.__conectar.listarUno(sql, (nombreUsuario, password))
+            conserje = Conserje(nombreUsuario, password, nombre, apellido, None, rut)
+            return conserje
+        
+        print('Error: Usuario o contraseña incorrectos')
+        return 
         
     def listar_solicitudes(self):
         sql = '''

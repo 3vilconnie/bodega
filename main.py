@@ -1,6 +1,7 @@
-
+import datetime
 import os
 
+from dao.EncargadoDAO import EncargadoDAO
 from dao.ConserjeDAO import ConserjeDAO
 from dao.AdministradorDAO import AdministradorDAO
 from dao.ProductoDAO import ProductoDAO
@@ -137,40 +138,46 @@ while(opcion != 0):
             nombreUsuario = notVoid('Ingrese su nombre de usuario:\n')
             password = notVoid('Ingrese su contraseña:\n')
             dao = ConserjeDAO()
-            dao.iniciar_sesion(nombreUsuario, password)
-            generarTitulo('Menu de conserje')
-            opcionConserje = generarMenu(menuConserje)
-            match(opcionConserje):
-                case 1: #generar solicitud
-                    pass
-                case 2: #modificar solicitud
-                    pass
-                case 3: #mostrar solicitudes
-                    generarTitulo('mostrar solicitudes')
-                    dao.listar_solicitudes()
-                case 3: #salir
-                    pass
+            usuario = dao.iniciar_sesion(nombreUsuario, password)
+            if usuario != None:
+                generarTitulo('Menu de conserje')
+                opcionConserje = generarMenu(menuConserje)
+                match(opcionConserje):
+                    case 1: #generar solicitud
+                        generarTitulo('Generar solicitud')
+                        solicitud = dao.generar_solicitud()
+                        fecha_hoy = datetime.date.today()
+                        dao.insertar_solicitud(fecha_hoy, usuario._rut)
+                        print(f"Solicitud generada con fecha: {fecha_hoy} y rut: {usuario._rut}")
+                        pausar()
+                    case 2: #modificar solicitud
+                        pass
+                    case 3: #mostrar solicitudes
+                        generarTitulo('mostrar solicitudes')
+                        dao.listar_solicitudes()
+                    case 3: #salir
+                        pass
         case 2: #as encargado
             generarTitulo('Iniciar sesion como encargado')
             nombreUsuario = notVoid('Ingrese su nombre de usuario:\n')
             password = notVoid('Ingrese su contraseña:\n')
-            dao = ConserjeDAO()
-            dao.iniciar_sesion(nombreUsuario, password)
-            generarTitulo('Menu de encargado')
-            opcionEncargado = generarMenu(menuEncargado)
-            match(opcionEncargado):
-                case 1: #generar reporte
-                    pass
-                case 2: #modificar reporte
-                    pass
-                case 3: #mostrar solicitudes
-                    pass
-                case 4: #mostrar personal
-                    pass
-                case 5: #agregar personal
-                    pass
-                case 6: #eliminar personal
-                    pass
+            dao = EncargadoDAO()
+            if dao.iniciar_sesion(nombreUsuario, password):
+                generarTitulo('Menu de encargado')
+                opcionEncargado = generarMenu(menuEncargado)
+                match(opcionEncargado):
+                    case 1: #generar reporte
+                        pass
+                    case 2: #modificar reporte
+                        pass
+                    case 3: #mostrar solicitudes
+                        pass
+                    case 4: #mostrar personal
+                        pass
+                    case 5: #agregar personal
+                        pass
+                    case 6: #eliminar personal
+                        pass
         case 3: #as administrador
             generarTitulo('Iniciar sesion como administrador')
             nombreUsuario = notVoid('Ingrese su nombre de usuario:\n')

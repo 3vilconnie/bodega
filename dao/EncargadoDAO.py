@@ -59,6 +59,8 @@ class EncargadoDAO:
             WHERE u.nombreUsuario = %s AND u.password = %s AND u.habilitado = True
         '''
         valores = (nombreUsuario, password)
-        resultado = self.__conn.obtener_uno(sql, valores)
+        if self.__conn.listarUno(sql, valores) != None:
+            print(f"sesion iniciada con exito: Bienvenido {nombreUsuario}!")
+            return True
         
-        return resultado
+        return False
