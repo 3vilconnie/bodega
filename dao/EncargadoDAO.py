@@ -27,11 +27,17 @@ class EncargadoDAO:
 
     def listar_encargados(self):
         sql = '''
-            SELECT u.nombreUsuario, p.nombre, p.apellido, p.email
+            SELECT u.nombreUsuario, p.nombre, p.apellido, p.email, p.rut, e.habilitado
             FROM encargado AS e INNER JOIN persona AS p ON p.rut = e.rut
-            INNER JOIN usuario as u ON u.nombreUsuario = e.nombreUsuario 
+            INNER JOIN usuario as u ON u.idusuario = e.idusuario 
         '''
-        return self.__conn.listar(sql)
+        if self.__conn.listar(sql) != None:
+            for i, e in enumerate(self.__conn.listar(sql)):
+                print(f"{i+1}. {e[0]} - {e[1]} {e[2]} - {e[3]} - {e[4]} - {'Habilitado' if e[5] else 'Deshabilitado'}")
+            return self.__conn.listar(sql)
+        else:
+            print("no se encontraron encargados")
+            return None
 
     def modificar_encargado(self, rut, password, nombre, apellido, email):
         sql = '''
@@ -53,14 +59,62 @@ class EncargadoDAO:
     
     def iniciar_sesion(self, nombreUsuario, password):
         sql = '''
-            SELECT nombreUsuario, nombre, apellido
+            SELECT u.nombreUsuario, p.nombre, p.apellido, p.rut, e.habilitado
             FROM encargado AS e INNER JOIN persona AS p ON p.rut = e.rut
             INNER JOIN usuario AS u ON e.idUsuario = u.idUsuario
-            WHERE u.nombreUsuario = %s AND u.password = %s AND u.habilitado = True
+            WHERE u.nombreUsuario = %s AND u.password = %s AND e.habilitado = True
         '''
         valores = (nombreUsuario, password)
-        if self.__conn.listarUno(sql, valores) != None:
+        usuario = self.__conn.listarUno(sql, valores)
+        if usuario != None:
+            nombreusuario, nombre, apellido, rut, habilitado = usuario
             print(f"sesion iniciada con exito: Bienvenido {nombreUsuario}!")
-            return True
+            return Encargado(nombreusuario, password, nombre, apellido, None, rut, habilitado)
         
-        return False
+        return None
+    
+    def listar_personal(self, rut):
+        sql = '''
+            SELECT u.nombreUsuario, p.nombre, p.apellido, p.email, p.rut, c.habilitado
+            FROM conserje AS c INNER JOIN persona AS p ON p.rut = c.rut
+            INNER JOIN usuario as u ON u.idusuario = c.idusuario
+            WHERE c.rutencargado = %s
+        '''
+        valores = (rut,)
+        resultado = self.__conn.listar(sql, valores)
+        if resultado != []:
+            for i, e in enumerate(resultado):
+                print(f"{i+1}. {e[0]} - {e[1]} {e[2]} - {e[3]} - {e[4]} - {'Habilitado' if e[5] else 'Deshabilitado'}")
+            return resultado
+        else:
+            print("no se encontraron conserjes asociados")
+            return None
+    
+    def desvincular_conserje(self, rut):
+        sql = '''
+            UPDATE conserje
+            SET rutEncargado = NULL
+            WHERE rut = %s
+        '''
+        if self.__conn.ejecutar_sql(sql, (rut,)):
+            print("conserje desvinculado")
+            return True
+        else:
+            print("error al desvincular conserje")
+        return 
+    
+    def listar_solicitudes(self, rut):
+        sql = '''
+            SELECT s.idsolicitud, s.fecha, s.rutconserje, s.estado
+            FROM solicitud AS s INNER JOIN conserje AS c ON s.rutconserje = c.rut
+            WHERE c.rutEncargado = %s
+        '''
+        valores = (rut,)
+        resultado = self.__conn.listar(sql, valores)
+        if resultado != []:
+            for i, e in enumerate(resultado):
+                print(f"{i+1}. {e[0]} - {e[1]} {e[2]} - {e[3]}")
+            return resultado
+        else:
+            print("no se encontraron solicitudes asociadas")
+            return None

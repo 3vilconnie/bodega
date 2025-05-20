@@ -23,8 +23,8 @@ class Conectar:
             return True
         return 
 
-    def listar(self, sql): # SELECT
-        self.__cursor.execute(sql) # Se encarga de ejecutar sql
+    def listar(self, sql, value=None): # SELECT
+        self.__cursor.execute(sql, value) # Se encarga de ejecutar sql
         resultado = self.__cursor.fetchall() # [ (codigo, nombre, precio, stock), (codigo, nombre, precio, stock)]
         return resultado
     

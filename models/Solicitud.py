@@ -1,20 +1,28 @@
 class Solicitud:
-    def __init__(self, fecha, rutConserje):
-        self.fecha = fecha
-        self.rutConserje = rutConserje
+    def __init__(self, fecha, rutConserje, estado):
+        self._fecha = fecha
+        self._rutConserje = rutConserje
+        self._estado = estado
         
     @property
     def fecha(self):
         return self._fecha
 
-    @fecha
+    @fecha.setter
     def fecha(self, value):
         self._fecha = value
 
     @property
-    def Conserje(self):
-        return self._Conserje
+    def rutConserje(self):
+        return self._rutConserje
 
-    @Conserje
-    def Conserje(self, value):
-        self._Conserje = value
+    @rutConserje.setter
+    def rutConserje(self, value):
+        self._rutConserje = value
+    @property
+    def estado(self):
+        return self._estado
+
+    @estado.setter
+    def estado(self, value):
+        self._estado = value

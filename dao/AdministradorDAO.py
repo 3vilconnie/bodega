@@ -62,3 +62,24 @@ class AdministradorDAO:
             return True
         
         return False
+    
+    def habilitar_encargado(self, rut):
+        sql = '''
+            UPDATE encargado
+            SET habilitado = true
+            WHERE rut = %s
+        '''
+        if self.__conn.ejecutar_sql(sql, (rut,)):
+            print("encargado habilitado")
+            return True
+        else:
+            print("error al habilitar encargado")
+            return False
+    
+    def deshabilitar_encargado(self, rut):
+        sql = '''
+            UPDATE encargado
+            SET habilitado = false
+            WHERE rut = %s
+        '''
+        return self.__conn.ejecutar_sql(sql, (rut,))
